@@ -26,15 +26,13 @@ class Scanner:
                 if self.is_reserved_word_or_operator(tok):
                     pif = self.genPif(tok, 0, pif)
                 elif self.is_identifier(tok):
-                    #ceva ul ala e luat din symbol table ma gandesc
                     id = sym_table_identifiers.add_value(tok).id
                     pif = self.genPif(tok, id, pif)
                 elif self.is_numerical_constant(tok) or self.is_string_constant(tok) or self.is_boolean_constant(tok):
                     id = sym_table_constants.add_value(tok).id
                     pif = self.genPif(tok, id, pif)                    
                 else:
-                    # TODO implement another exception
-                    # TODO show line and tok
+                  
                     raise ValueError('lexical error at line: ' + str(number) + ' from token: ' + tok)
             number+=1
         return pif, sym_table_identifiers, sym_table_constants
@@ -50,7 +48,6 @@ class Scanner:
         return b
 
     def is_numerical_constant(self, tok):
-        # return tok=='TRU' or tok == 'FALS' or  (re.match(r'^(0|[\+\-]?[1-9][0-9])$|^\'.\'$|^\".\"$', tok) is not None)
         return re.match(r'^(-?\d+\.\d+)$|^(-?\d+)$', tok) is not None
     
     def is_boolean_constant(self, tok):
@@ -66,26 +63,6 @@ class Scanner:
     def detect_tokens(self, line: str) -> List[str]:
 
         toks = []
-
-        # for tok in toks_split_at_white:
-        #     tok = tok.strip()
-        #     word = ''
-        #     for i in range(len(tok)):
-        #         if self.__is_operator(tok[i]):
-        #             if word!='':
-        #                 toks.append(word)
-        #                 word=''
-        #             if self.__is_operator(tok[i] + tok[i+1]) == True:
-        #                 i+=1
-        #                 toks.append(tok[i] + tok[i+1])
-        #             else:
-        #                 toks.append(tok[i])
-        #         else:
-        #             word = word + tok[i]
-        #     if word != '':
-        #         toks.append(word)
-        # return toks  
-
         word = ''
         i=0
         while i < len(line):
