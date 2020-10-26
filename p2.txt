@@ -1,0 +1,28 @@
+main-body{
+
+    2int val1, val2, @val3;
+
+
+    val1 <- read_integer('Read the first value);
+    val2 <- read_integer('Read the second value');
+    val3 <- read_integer('Read the third value');
+
+    integer maximum;
+    maximum <- val1;
+
+
+    if [ maximum <= val2 ] then 
+        {
+            maximum <- val2;
+        }
+    if [ maximum <= val3 ] then
+        {
+            maximum <- val3;
+        }
+
+
+    show_to_console('the maximum is ');
+    show_to_console(maximum);
+
+    
+}

@@ -1,0 +1,24 @@
+Predefined words can't be used as variables under any circumstance
+program ::= "main-body{" cmpdstmt "}"
+declist ::=  declaration | declaration ";" decllist
+declaration ::= type identifier
+type1 ::= "boolean" |  "integer" | "char" | "string"
+arraydecl ::= "dynamic-array" "[" type1 "]"
+type ::= type1 | arraydecl
+cmpdstmt ::= stmtlist
+
+stmtlist::=stmt | stmt ";" stmtlist
+stmt ::= simplstmt | structstmt
+simplstmt::=  assignstmt | iostmt
+assignstmt ::= identifier "<-" expression
+expression ::= expression "+" term | term | expression "-"
+term ::= term "*" factor | factor | term "/" factor | term "%" factor 
+factor ::= expression | identifier
+iostmt ::= "read-integer" "(" ")"| "read-boolean" "(" ")" | "read-string" "(" ")"| "show-to-console" "(" identifier ")"
+
+structstmt ::= cmpdstmt | ifstmt | iteratestmt
+ifstmt ::= "if" condition "then" stmt ["else-if" condition "then" stms] ["else" stmt]
+iteratestmt ::= "iterate" "[" stmt "," condition ","  stmt "]" "and-do" stmt
+condition ::= expression RELATION expression 
+RELATION ::= "<" | "<=" | "=" | "<>" | ">=" | ">" 
+

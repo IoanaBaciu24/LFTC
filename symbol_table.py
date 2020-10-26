@@ -22,6 +22,7 @@ class SymbolTable:
         if self.root == None:
             self.root = Node(value, GLOBAL_ID)
             GLOBAL_ID+=1
+            return self.root
         else:
             prev = None
             l,r = False, False
@@ -60,6 +61,21 @@ class SymbolTable:
         
         return -1
 
+    def __preorder_get_string(self, node: Node):
+        string = ""
+        if node!=None:
+            string += str(node) + ': ' 
+            string+= 'left: ' + str(node.left) + ' '
+            string+= 'right: ' + str(node.right) + ' '
+            string+='\n'
+            string+= self.__preorder_get_string(node.left)
+            string+= self.__preorder_get_string(node.right)
+        return string
+
+    def __str__(self):
+        return self.__preorder_get_string(self.root)
+
+
 
 tbl = SymbolTable("identifiers")
 
@@ -73,6 +89,8 @@ print(tbl.search_for_value("a"))
 print(tbl.search_for_value("e"))
 print(tbl.search_for_value("c"))
 print(tbl.search_for_value("s"))
+
+print(tbl)
 
 
 

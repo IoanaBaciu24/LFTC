@@ -1,0 +1,162 @@
+from typing import List
+from pif import PIF
+from symbol_table import SymbolTable, GLOBAL_ID
+import re 
+
+
+class Scanner:
+    def __init__(self, file_path: str, in_lang_separators, tokens_path: str):
+        self.file_path = file_path
+        self.in_lang_separators = in_lang_separators
+        self.tokens = tokens_path
+        
+
+    def scan(self, pif: PIF, sym_table_identifiers: SymbolTable, sym_table_constants):
+        global GLOBAL_ID
+        f = open(self.file_path)
+        number = 0
+        while True:
+            line = f.readline()
+            if not line:
+                break
+            line = line[:-1]
+            tokens = self.detect_tokens(line)
+            print(tokens)
+            for tok in tokens:
+                if self.is_reserved_word_or_operator(tok):
+                    pif = self.genPif(tok, 0, pif)
+                elif self.is_identifier(tok):
+                    #ceva ul ala e luat din symbol table ma gandesc
+                    id = sym_table_identifiers.add_value(tok).id
+                    pif = self.genPif(tok, id, pif)
+                elif self.is_numerical_constant(tok) or self.is_string_constant(tok) or self.is_boolean_constant(tok):
+                    id = sym_table_constants.add_value(tok).id
+                    pif = self.genPif(tok, id, pif)                    
+                else:
+                    # TODO implement another exception
+                    # TODO show line and tok
+                    raise ValueError('lexical error at line: ' + str(number) + ' from token: ' + tok)
+            number+=1
+        return pif, sym_table_identifiers, sym_table_constants
+                    
+    def __is_operator(self, tok: str) -> bool:
+        f = open(self.in_lang_separators)
+        lines = f.read().splitlines()
+        if tok  in lines:
+            b=True
+        else:
+            b=False
+        f.close()
+        return b
+
+    def is_numerical_constant(self, tok):
+        # return tok=='TRU' or tok == 'FALS' or  (re.match(r'^(0|[\+\-]?[1-9][0-9])$|^\'.\'$|^\".\"$', tok) is not None)
+        return re.match(r'^(-?\d+\.\d+)$|^(-?\d+)$', tok) is not None
+    
+    def is_boolean_constant(self, tok):
+        return tok=='TRU' or tok == 'FALS'
+    
+    def is_string_constant(self,tok):
+        return tok[0] == "'" and tok[-1] == "'"
+    
+    def is_identifier(self, tok):
+        return re.match(r'^[a-zA-Z]([a-zA-Z]|[0-9]|_){,7}$', tok) is not None
+
+
+    def detect_tokens(self, line: str) -> List[str]:
+
+        toks = []
+
+        # for tok in toks_split_at_white:
+        #     tok = tok.strip()
+        #     word = ''
+        #     for i in range(len(tok)):
+        #         if self.__is_operator(tok[i]):
+        #             if word!='':
+        #                 toks.append(word)
+        #                 word=''
+        #             if self.__is_operator(tok[i] + tok[i+1]) == True:
+        #                 i+=1
+        #                 toks.append(tok[i] + tok[i+1])
+        #             else:
+        #                 toks.append(tok[i])
+        #         else:
+        #             word = word + tok[i]
+        #     if word != '':
+        #         toks.append(word)
+        # return toks  
+
+        word = ''
+        i=0
+        while i < len(line):
+            if line[i] == "'":
+                if word!='':
+                    toks.append(word)
+                word = "'"
+                i+=1
+                while i<len(line) and line[i]!="'":
+                    word+=line[i]
+                    i+=1
+                if i<len(line):     # this line should complete the string, if possible 
+                    word+=line[i]
+                    i+=1
+            elif line[i] == ' ':
+                if word!='':
+                    toks.append(word)
+                    word = ''
+            elif self.__is_operator(line[i]):
+                if word != '':
+                    toks.append(word)
+                if i< len(line)-1 and self.__is_operator(line[i] + line[i+1]):
+                    toks.append(line[i] + line[i+1])
+                    i=i+1
+
+                else:
+                    toks.append(line[i])
+                word = ''
+            else:
+                word+=line[i]
+            i+=1
+        if word!='':
+            toks.append(word)
+        return toks  
+
+                
+
+                
+    def is_operator_separator(self, tok: str) -> bool:
+        f = open(self.in_lang_separators)
+        lines = f.read().splitlines()
+        if tok in lines:
+            b=True
+        else:
+            b=False
+        f.close()
+        return b
+
+
+    def is_reserved_word_or_operator(self, tok: str) -> bool:
+        f = open(self.tokens)
+        lines = f.read().splitlines()
+        if tok in lines:
+            b=True
+        else:
+            b=False
+        f.close()
+        return b        
+    
+
+    def genPif(self, tok: str, index: int, pif: PIF):
+        
+        pif.add(tok,index)
+        return pif
+
+
+scanner = Scanner('p2.txt', 'seps.txt', 'tokens.in')
+pif = PIF()
+sym_table_identifiers = SymbolTable('identifiers')
+sym_table_constants = SymbolTable('constants')
+pif, symi, symc = scanner.scan(pif, sym_table_identifiers, sym_table_constants)
+print(pif)
+print(symi)
+print(symc)
