@@ -35,6 +35,7 @@ class Scanner:
                   
                     raise ValueError('lexical error at line: ' + str(number) + ' from token: ' + tok)
             number+=1
+        # if the function returns without any error, it means that the program is lexically correct
         return pif, sym_table_identifiers, sym_table_constants
                     
     def __is_operator(self, tok: str) -> bool:
