@@ -2,6 +2,7 @@ from typing import List
 from pif import PIF
 from symbol_table import SymbolTable, GLOBAL_ID
 import re 
+from finite_automata import FiniteAutomata
 
 
 class Scanner:
@@ -49,7 +50,9 @@ class Scanner:
         return b
 
     def is_numerical_constant(self, tok):
-        return re.match(r'^(-?\d+\.\d+)$|^(-?\d+)$', tok) is not None
+        # return re.match(r'^(-?\d+\.\d+)$|^(-?\d+)$', tok) is not None
+        fa = FiniteAutomata.read_from_file("FAINTS.in")
+        return fa.check_sequence(tok)
     
     def is_boolean_constant(self, tok):
         return tok=='TRU' or tok == 'FALS'
@@ -58,7 +61,9 @@ class Scanner:
         return tok[0] == "'" and tok[-1] == "'"
     
     def is_identifier(self, tok):
-        return re.match(r'^[a-zA-Z]([a-zA-Z]|[0-9]|_){,7}$', tok) is not None
+        # return re.match(r'^[a-zA-Z]([a-zA-Z]|[0-9]|_){,7}$', tok) is not None
+        fa = FiniteAutomata.read_from_file("FAIDS.in")
+        return fa.check_sequence(tok)
 
 
     def detect_tokens(self, line: str) -> List[str]:
@@ -130,11 +135,23 @@ class Scanner:
         return pif
 
 
-scanner = Scanner('p2.txt', 'seps.txt', 'tokens.in')
-pif = PIF()
-sym_table_identifiers = SymbolTable('identifiers')
-sym_table_constants = SymbolTable('constants')
-pif, symi, symc = scanner.scan(pif, sym_table_identifiers, sym_table_constants)
-print(pif)
-print(symi)
-print(symc)
+def test_scanner():
+    scanner = Scanner('p1.txt', 'seps.txt', 'tokens.in')
+    pif = PIF()
+    sym_table_identifiers = SymbolTable('identifiers')
+    sym_table_constants = SymbolTable('constants')
+    pif, symi, symc = scanner.scan(pif, sym_table_identifiers, sym_table_constants)
+    # print(pif)
+    print('-------------------PIF START-----------------------------------')
+    for elem in pif.data:
+        print(elem)
+
+    print('-------------------PIF END-----------------------------------')
+
+    print("Identifiers symbol table")
+    print(symi)
+    print("Constants symbol table")
+    print(symc)
+
+
+test_scanner()
