@@ -38,7 +38,7 @@ def create_FA_file_for_identifiers():
 
     f.write("q0,qf\n")
     s="_,"
-    for i in range(0,9):
+    for i in range(0,10):
         s+=str(i)+","
     for i in range(26):
         s+=chr(ord("a")+i) + ","
@@ -54,7 +54,7 @@ def create_FA_file_for_identifiers():
         f.write("q0," + chr(ord("a")+i) + "=qf\n")
     for i in range(26):
         f.write("q0," + chr(ord("A")+i) + "=qf\n")
-    for i in range(0,9):
+    for i in range(0,10):
         f.write("qf," + str(i) + "=qf\n")
     for i in range(26):
         f.write("qf," + chr(ord("a")+i) + "=qf\n")
@@ -62,4 +62,4 @@ def create_FA_file_for_identifiers():
         f.write("qf," + chr(ord("A")+i) + "=qf\n")
     f.write("qf,_=qf\n")
 
-# create_FA_file_for_identifiers()
+create_FA_file_for_identifiers()
