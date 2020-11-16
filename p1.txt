@@ -1,12 +1,12 @@
 main_body{
 
-    integer val1, val2, val3;
+    integer val1, val2, val3, aux;
 
     val1 <- read_integer('Read the first value');
     val2 <- read_integer('Read the second value');
     val3 <- read_integer('Read the third value');
 
-    
+    aux <- -1;
     integer maximum;
     maximum <- val1;
 

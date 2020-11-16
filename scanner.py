@@ -90,13 +90,17 @@ class Scanner:
             elif self.__is_operator(line[i]):
                 if word != '':
                     toks.append(word)
-                if i< len(line)-1 and self.__is_operator(line[i] + line[i+1]):
-                    toks.append(line[i] + line[i+1])
-                    i=i+1
 
+                if line[i] == "-" and toks[-1] == "<-":
+                    word = "-"
                 else:
-                    toks.append(line[i])
-                word = ''
+                    if i< len(line)-1 and self.__is_operator(line[i] + line[i+1]):
+                        toks.append(line[i] + line[i+1])
+                        i=i+1
+
+                    else:
+                        toks.append(line[i])
+                    word = ''
             else:
                 word+=line[i]
             i+=1
@@ -136,6 +140,8 @@ class Scanner:
 
 
 def test_scanner():
+    #TODO: handle the -number case    
+
     scanner = Scanner('p1.txt', 'seps.txt', 'tokens.in')
     pif = PIF()
     sym_table_identifiers = SymbolTable('identifiers')
